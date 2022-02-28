@@ -18,32 +18,32 @@ public class ApplicationWindow
 {
 	private JFrame frParent;
 	private UpdateType updateType;
-	private String stAppID;
+	private Application app;
 	private String stTitle;
 	private String stOkay; 
 	
-	public ApplicationWindow(JFrame frParent, UpdateType updateType, String stAppID)
+	public ApplicationWindow(JFrame frParent, UpdateType updateType, Application app)
 	{
 		this.frParent = frParent;
 		this.updateType = updateType;
-		this.stAppID = stAppID;
+		this.app = app;
 		
 		switch (updateType)
 		{
 		case VIEW:
-			stTitle = "View Application:" + stAppID;
+			stTitle = "View Application:" + app.getID();
 			stOkay = "View";
 			break;
 			case ADD:
-				stTitle = "Add Application:" + stAppID;
+				stTitle = "Add Application:" + app.getID();
 				stOkay = "Add";
 				break;
 			case UPDATE:
-				stTitle = "Update Application:" + stAppID;
+				stTitle = "Update Application:" + app.getID();
 				stOkay = "Update";
 				break;
 			case DELETE:
-				stTitle = "Delete Application:" + stAppID;
+				stTitle = "Delete Application:" + app.getID();
 				stOkay = "Delete";
 				break;
 		}
@@ -59,33 +59,48 @@ public class ApplicationWindow
 		
 		// Client panels
 		JPanel plCID = new JPanel(new BorderLayout());
-		JTextField txCID = createField(plCID, "ID:");
+		JTextField txCID = createField(plCID, "Client ID:", app.getCID());
 		JPanel plCName = new JPanel(new BorderLayout());
-		JTextField txCName = createField(plCName, "Name:");
+		JTextField txCName = createField(plCName, "Name:", app.getName());
+		JPanel plCEmail = new JPanel(new BorderLayout());
+		JTextField txCEmail = createField(plCEmail, "Email:", app.getEmail());
+		JPanel plCCreditStatus = new JPanel(new BorderLayout());
+		JTextField txCCreditStatus = createField(plCCreditStatus, "Credit status:",String.valueOf(app.getCreditStatus()));
 		JPanel plCIncome = new JPanel(new BorderLayout());
-		JTextField txCIncome = createField(plCIncome, "Income:");
+		JTextField txCIncome = createField(plCIncome, "Income:", String.valueOf(app.getIncome()));
+		JPanel plCExpenses = new JPanel(new BorderLayout());
+		JTextField txCExpenses = createField(plCExpenses, "Expenses:", String.valueOf(app.getExpenses()));
+		JPanel plCOffer = new JPanel(new BorderLayout());
+		JTextField txCOffer = createField(plCOffer, "Offer:", String.valueOf(app.getOffer()));
 				
 		JPanel plClient = new JPanel();
 		plClient.setLayout(new BoxLayout(plClient, BoxLayout.Y_AXIS));
 		plClient.add(new JLabel("Client"));
 		plClient.add(plCID);
 		plClient.add(plCName);
+		plClient.add(plCEmail);
+		plClient.add(plCCreditStatus);
 		plClient.add(plCIncome);
+		plClient.add(plCExpenses);
+		plClient.add(plCOffer);
 		
 		// Property panels
 		JPanel plPID = new JPanel(new BorderLayout());
-		JTextField txPID = createField(plPID, "ID:");
+		JTextField txPID = createField(plPID, "Property ID:", app.getPID());
 		JPanel plPAddress = new JPanel(new BorderLayout());
-		JTextField txPAddress = createField(plPAddress, "Address:");
-		JPanel plPOffer = new JPanel(new BorderLayout());
-		JTextField txPOffer = createField(plPOffer, "Offer price:");
+		JTextField txPAddress = createField(plPAddress, "Address:", app.getAddress());
+		JPanel plPCondition = new JPanel(new BorderLayout());
+		JTextField txPCondition = createField(plPCondition, "Condition:", String.valueOf(app.getInspection()));
+		JPanel plPValue = new JPanel(new BorderLayout());
+		JTextField txPValue = createField(plPValue, "Value:", String.valueOf(app.getAppraisal()));
 				
 		JPanel plProperty = new JPanel();
 		plProperty.setLayout(new BoxLayout(plProperty, BoxLayout.Y_AXIS));
 		plProperty.add(new JLabel("Property"));
 		plProperty.add(plPID);
 		plProperty.add(plPAddress);
-		plProperty.add(plPOffer);
+		plProperty.add(plPCondition);
+		plProperty.add(plPValue);
 		
         // Button panel
         JPanel plButtons = new JPanel();
@@ -129,10 +144,10 @@ public class ApplicationWindow
 		frame.setVisible(true);
 	}
 
-	private JTextField createField(JPanel plField, String stLabel)
+	private JTextField createField(JPanel plField, String stLabel, String stValue)
 	{
 		JLabel lbField = new JLabel(stLabel);
-		JTextField txField = new JTextField();
+		JTextField txField = new JTextField(stValue);
 		//plField.add(lbField, BorderLayout.WEST);
 		//plField.add(txField, BorderLayout.CENTER);
 		plField.setLayout(new BoxLayout(plField, BoxLayout.X_AXIS));

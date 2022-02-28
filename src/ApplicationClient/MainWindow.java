@@ -1,6 +1,8 @@
 package ApplicationClient;
 
 import java.util.List;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -27,12 +29,15 @@ import javax.swing.event.ListSelectionEvent;
 public class MainWindow
 {
 	private String stTitle;
+	private LinkedList<Application> llApps;
 	private String stAppID;
+	private Application app;
 	
-	public MainWindow(String stTitle)
+	public MainWindow(String stTitle, LinkedList<Application> llApps)
 	{
 		this.stTitle = stTitle;
-		stAppID = "";
+		this.stAppID = "";
+		this.llApps = llApps;
 		
 		CreateWindow();
 	}
@@ -95,9 +100,9 @@ public class MainWindow
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				if (stAppID != "")
+				if (stAppID.compareTo("") != 0)
 				{
-					ApplicationWindow viewWindow = new ApplicationWindow(frame, UpdateType.VIEW, stAppID);
+					ApplicationWindow viewWindow = new ApplicationWindow(frame, UpdateType.VIEW, app);
 				}
 			}
 		};
@@ -106,7 +111,10 @@ public class MainWindow
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				ApplicationWindow addWindow = new ApplicationWindow(frame, UpdateType.ADD, stAppID);
+				if (stAppID.compareTo("") != 0)
+				{
+					ApplicationWindow addWindow = new ApplicationWindow(frame, UpdateType.ADD, app);
+				}
 			}
 		};
 		
@@ -114,7 +122,10 @@ public class MainWindow
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				ApplicationWindow updateWindow = new ApplicationWindow(frame, UpdateType.UPDATE, stAppID);
+				if (stAppID.compareTo("") != 0)
+				{
+					ApplicationWindow updateWindow = new ApplicationWindow(frame, UpdateType.UPDATE, app);
+				}
 			}
 		};
 
@@ -122,7 +133,10 @@ public class MainWindow
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				ApplicationWindow deleteWindow = new ApplicationWindow(frame, UpdateType.DELETE, stAppID);
+				if (stAppID.compareTo("") != 0)
+				{
+					ApplicationWindow deleteWindow = new ApplicationWindow(frame, UpdateType.DELETE, app);
+				}
 			}
 		};
 
@@ -150,17 +164,44 @@ public class MainWindow
                 if(!e.getValueIsAdjusting())
                 {
                     final List<String> selectedValuesList = ltCustomers.getSelectedValuesList();
-                    System.out.println(selectedValuesList.get(0).split(" ")[0]);
-                    stAppID = selectedValuesList.get(0).split(" ")[0];                
+                    if (selectedValuesList.size() != 0)
+                    {
+                    	System.out.println(selectedValuesList.get(0).split(" ")[0]);
+                    	stAppID = selectedValuesList.get(0).split(" ")[0]; 
+                    	app = findApp(stAppID);
+                    }
+                    else
+                    {
+                    	System.out.println("Unselected");
+                    	stAppID = ""; 
+                    }
                 }
             }
         });        
-        
-        // Display winodw
+
+        // Display window
         frame.setVisible(true);
 	}
 	
-	public static boolean okCancel(String stMessage, String stTitle)
+    public Application findApp(String stAppID)
+    {
+    	Iterator<Application> appIter = llApps.iterator();
+    	
+        while (appIter.hasNext())
+        {
+        	app = appIter.next();
+        	System.out.println("Here: " + app.getID() + " " + stAppID);
+        	if (stAppID.compareTo(app.getID()) == 0)
+        	{
+        		System.out.println("Found: " + app.getID());
+        		break;
+        	}
+            //System.out.println(app);
+        }
+    	return app;
+    }
+
+    public static boolean okCancel(String stMessage, String stTitle)
 	{
 		return (JOptionPane.showConfirmDialog((Component)null, stMessage, stTitle, JOptionPane.OK_CANCEL_OPTION) == 0) ? true : false;
 	}
@@ -168,12 +209,16 @@ public class MainWindow
 	private DefaultListModel<String> getCustomersListModel()
 	{
 		DefaultListModel<String> lmCustomers = new DefaultListModel<>();
-		lmCustomers.addElement("APP01 David Cleary");
-		lmCustomers.addElement("APP52 Chris Zhong");
-		lmCustomers.addElement("APP67 Mike Hall");
-		lmCustomers.addElement("APP87 Scott Hopkins");
-		lmCustomers.addElement("APP91 Nicky Moore");
 		
+    	Application app; 
+		Iterator<Application> appIter = llApps.iterator();
+        while (appIter.hasNext())
+        {
+        	app = appIter.next();
+            System.out.println(app);
+            lmCustomers.addElement(app.getID() + " " + app.getName());
+        }
+
 		return lmCustomers;
 	}
 }
