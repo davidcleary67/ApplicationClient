@@ -141,9 +141,59 @@ public class Application
         this.stID = stID;
     }
 
+    public void setCID(String stCID)
+    {
+        this.data.stCID = stCID;
+    }
+
     public void setName(String stName)
     {
         this.data.stName = stName;
+    }
+
+    public void setEmail(String stEmail)
+    {
+        this.data.stEmail = stEmail;
+    }
+
+    public void setCreditStatus(boolean bCreditStatus)
+    {
+        this.data.bCreditStatus = bCreditStatus;
+    }
+
+    public void setIncome(int iIncome)
+    {
+        this.data.iIncome = iIncome;
+    }
+
+    public void setExpenses(int iExpenses)
+    {
+        this.data.iExpenses = iExpenses;
+    }
+
+    public void setOffer(int iOffer)
+    {
+        this.data.iOffer = iOffer;
+    }
+
+    public void setPID(String stPID)
+    {
+        this.data.stPID = stPID;
+    }
+
+    public void setAddress(String stAddress)
+    {
+        this.data.stAddress = stAddress;
+    }
+
+    public void setInspection(boolean bInspection)
+    {
+        this.data.bInspection = bInspection;
+    }
+
+    public void setAppraisal(int iAppraisal)
+    {
+        this.data.iAppraisal = iAppraisal;
     }
 
     public void setData(Data data)

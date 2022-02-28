@@ -1,5 +1,8 @@
 package ApplicationClient;
 
+import java.util.List;
+import java.util.LinkedList;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -19,14 +22,29 @@ public class ApplicationWindow
 	private JFrame frParent;
 	private UpdateType updateType;
 	private Application app;
+	private LinkedList<Application> llApps;
 	private String stTitle;
 	private String stOkay; 
 	
-	public ApplicationWindow(JFrame frParent, UpdateType updateType, Application app)
+	private JTextField txCID;
+	private JTextField txCName;
+	private JTextField txCEmail;
+	private JTextField txCCreditStatus;
+	private JTextField txCIncome;
+	private JTextField txCExpenses;
+	private JTextField txCOffer;
+	
+	private JTextField txPID;
+	private JTextField txPAddress;
+	private JTextField txPCondition;
+	private JTextField txPValue;
+	
+	public ApplicationWindow(JFrame frParent, UpdateType updateType, Application app, LinkedList<Application> llApps)
 	{
 		this.frParent = frParent;
 		this.updateType = updateType;
 		this.app = app;
+		this.llApps = llApps;
 		
 		switch (updateType)
 		{
@@ -57,21 +75,21 @@ public class ApplicationWindow
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setSize(700, 400);
 		
-		// Client panels
+		// Customer panels
 		JPanel plCID = new JPanel(new BorderLayout());
-		JTextField txCID = createField(plCID, "Client ID:", app.getCID());
+		txCID = createField(plCID, "Client ID:", app.getCID());
 		JPanel plCName = new JPanel(new BorderLayout());
-		JTextField txCName = createField(plCName, "Name:", app.getName());
+		txCName = createField(plCName, "Name:", app.getName());
 		JPanel plCEmail = new JPanel(new BorderLayout());
-		JTextField txCEmail = createField(plCEmail, "Email:", app.getEmail());
+		txCEmail = createField(plCEmail, "Email:", app.getEmail());
 		JPanel plCCreditStatus = new JPanel(new BorderLayout());
-		JTextField txCCreditStatus = createField(plCCreditStatus, "Credit status:",String.valueOf(app.getCreditStatus()));
+		txCCreditStatus = createField(plCCreditStatus, "Credit status:",String.valueOf(app.getCreditStatus()));
 		JPanel plCIncome = new JPanel(new BorderLayout());
-		JTextField txCIncome = createField(plCIncome, "Income:", String.valueOf(app.getIncome()));
+		txCIncome = createField(plCIncome, "Income:", String.valueOf(app.getIncome()));
 		JPanel plCExpenses = new JPanel(new BorderLayout());
-		JTextField txCExpenses = createField(plCExpenses, "Expenses:", String.valueOf(app.getExpenses()));
+		txCExpenses = createField(plCExpenses, "Expenses:", String.valueOf(app.getExpenses()));
 		JPanel plCOffer = new JPanel(new BorderLayout());
-		JTextField txCOffer = createField(plCOffer, "Offer:", String.valueOf(app.getOffer()));
+		txCOffer = createField(plCOffer, "Offer:", String.valueOf(app.getOffer()));
 				
 		JPanel plClient = new JPanel();
 		plClient.setLayout(new BoxLayout(plClient, BoxLayout.Y_AXIS));
@@ -86,13 +104,13 @@ public class ApplicationWindow
 		
 		// Property panels
 		JPanel plPID = new JPanel(new BorderLayout());
-		JTextField txPID = createField(plPID, "Property ID:", app.getPID());
+		txPID = createField(plPID, "Property ID:", app.getPID());
 		JPanel plPAddress = new JPanel(new BorderLayout());
-		JTextField txPAddress = createField(plPAddress, "Address:", app.getAddress());
+		txPAddress = createField(plPAddress, "Address:", app.getAddress());
 		JPanel plPCondition = new JPanel(new BorderLayout());
-		JTextField txPCondition = createField(plPCondition, "Condition:", String.valueOf(app.getInspection()));
+		txPCondition = createField(plPCondition, "Condition:", String.valueOf(app.getInspection()));
 		JPanel plPValue = new JPanel(new BorderLayout());
-		JTextField txPValue = createField(plPValue, "Value:", String.valueOf(app.getAppraisal()));
+		txPValue = createField(plPValue, "Value:", String.valueOf(app.getAppraisal()));
 				
 		JPanel plProperty = new JPanel();
 		plProperty.setLayout(new BoxLayout(plProperty, BoxLayout.Y_AXIS));
@@ -130,6 +148,33 @@ public class ApplicationWindow
         frame.getContentPane().add(BorderLayout.CENTER, plFields);
         
         // Action listeners
+        ActionListener alOkay = new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				switch (updateType)
+				{
+				case VIEW:
+					break;
+				case ADD:
+					addApplication();
+					break;
+				case UPDATE:
+					updateApplication();
+					break;
+				case DELETE:
+					if (MainWindow.okCancel("Do you want to delete application: " + app.getID() + "?", "Delete Application"))
+					{
+						deleteApplication();
+						frame.dispose();
+					}
+					break;
+				}
+			}
+		};
+
+		btOkay.addActionListener(alOkay);
+		
         ActionListener alClose = new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -147,9 +192,9 @@ public class ApplicationWindow
 	private JTextField createField(JPanel plField, String stLabel, String stValue)
 	{
 		JLabel lbField = new JLabel(stLabel);
-		JTextField txField = new JTextField(stValue);
-		//plField.add(lbField, BorderLayout.WEST);
-		//plField.add(txField, BorderLayout.CENTER);
+		JTextField txField = (updateType == UpdateType.ADD) ? new JTextField() : new JTextField(stValue);
+		txField.setEditable(updateType == UpdateType.ADD || updateType == UpdateType.UPDATE);
+
 		plField.setLayout(new BoxLayout(plField, BoxLayout.X_AXIS));
 		plField.add(lbField);
 		plField.add(txField);
@@ -157,4 +202,30 @@ public class ApplicationWindow
 		return txField;
 	}
 	
+	private void deleteApplication()
+	{
+		llApps.remove(app);
+	}
+
+	private void updateApplication()
+	{
+		app.setCID(txCID.getText());
+		app.setName(txCName.getText());
+		app.setEmail(txCEmail.getText());
+		app.setCreditStatus(Boolean.parseBoolean(txCCreditStatus.getText()));
+		app.setIncome(Integer.parseInt(txCIncome.getText()));
+		app.setExpenses(Integer.parseInt(txCExpenses.getText()));
+		app.setOffer(Integer.parseInt(txCOffer.getText()));
+		app.setPID(txPID.getText());
+		app.setAddress(txPAddress.getText());
+		app.setInspection(Boolean.parseBoolean(txPCondition.getText()));
+		app.setAppraisal(Integer.parseInt(txPValue.getText()));
+	}
+
+	private void addApplication()
+	{
+		updateApplication();
+		//llApps.remove(app);
+	}
+
 }

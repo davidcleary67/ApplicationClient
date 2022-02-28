@@ -32,6 +32,7 @@ public class MainWindow
 	private LinkedList<Application> llApps;
 	private String stAppID;
 	private Application app;
+	private DefaultListModel<String> lmCustomers; 
 	
 	public MainWindow(String stTitle, LinkedList<Application> llApps)
 	{
@@ -74,7 +75,7 @@ public class MainWindow
         plButtons.add(btExit);
         
         // Customer list
-        DefaultListModel<String> lmCustomers = getCustomersListModel();
+        lmCustomers = getCustomersListModel();
         JList<String> ltCustomers = new JList<>(lmCustomers);
         ltCustomers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ltCustomers.setLayoutOrientation(JList.HORIZONTAL_WRAP);
@@ -102,7 +103,7 @@ public class MainWindow
 			{
 				if (stAppID.compareTo("") != 0)
 				{
-					ApplicationWindow viewWindow = new ApplicationWindow(frame, UpdateType.VIEW, app);
+					ApplicationWindow viewWindow = new ApplicationWindow(frame, UpdateType.VIEW, app, llApps);
 				}
 			}
 		};
@@ -111,10 +112,8 @@ public class MainWindow
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				if (stAppID.compareTo("") != 0)
-				{
-					ApplicationWindow addWindow = new ApplicationWindow(frame, UpdateType.ADD, app);
-				}
+				app = new Application();
+				ApplicationWindow addWindow = new ApplicationWindow(frame, UpdateType.ADD, app, llApps);
 			}
 		};
 		
@@ -124,7 +123,8 @@ public class MainWindow
 			{
 				if (stAppID.compareTo("") != 0)
 				{
-					ApplicationWindow updateWindow = new ApplicationWindow(frame, UpdateType.UPDATE, app);
+					app = new Application();
+					ApplicationWindow updateWindow = new ApplicationWindow(frame, UpdateType.UPDATE, app, llApps);
 				}
 			}
 		};
@@ -135,7 +135,17 @@ public class MainWindow
 			{
 				if (stAppID.compareTo("") != 0)
 				{
-					ApplicationWindow deleteWindow = new ApplicationWindow(frame, UpdateType.DELETE, app);
+					ApplicationWindow deleteWindow = new ApplicationWindow(frame, UpdateType.DELETE, app, llApps);
+					lmCustomers.clear();
+					
+					Application app; 
+					Iterator<Application> appIter = llApps.iterator();
+			        while (appIter.hasNext())
+			        {
+			        	app = appIter.next();
+			            //System.out.println(app);
+			            lmCustomers.addElement(app.getID() + " " + app.getName());
+			        }
 				}
 			}
 		};
