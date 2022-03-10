@@ -123,7 +123,6 @@ public class MainWindow
 			{
 				if (stAppID.compareTo("") != 0)
 				{
-					app = new Application();
 					ApplicationWindow updateWindow = new ApplicationWindow(frame, UpdateType.UPDATE, app, llApps);
 				}
 			}
